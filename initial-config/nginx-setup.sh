@@ -14,7 +14,7 @@ if [[ $VAR == "Red Hat" ]]; then
   echo "* Install NGINX ..."
   dnf install -y nginx
 
-  echo "* Install Apache ..."
+  echo "* Install PHP ..."
   dnf module install -y php
 
   echo "* Change the default web page ..."
@@ -52,29 +52,31 @@ if [[ $VAR == 'Debian' ]]; then
   echo "* Install prerequisites ..."
   apt update && apt install -y nano curl tree
 
-  echo "* Install Apache and php ..."
-  apt install -y apache2 php
+  echo "* Install NGINX and PHP ..."
+  apt install -y nginx php php-fpm
 
-#  echo "* Turn off the default web page ..."
-#  sed -i 's/^/#/g' /etc/httpd/conf.d/welcome.conf
+  echo "* Change config for the default site and test ..."
+  sed -i "46s/_;/`hostname`;/" /etc/nginx/sites-available/default
+  nginx -t
 
-#  echo "* Change config file and test..."
-#  sed -i "89s/localhost/`hostname`/" /etc/httpd/conf/httpd.conf
-#  sed -i "98s/#//" /etc/httpd/conf/httpd.conf
-#  sed -i "98s/www.example.com/`hostname`/" /etc/httpd/conf/httpd.conf
-#  sed -i '147s/Indexes //' /etc/httpd/conf/httpd.conf
-#  sed -i '167s/index.html/index.php index.html/' /etc/httpd/conf/httpd.conf
-#  apachectl configtest
+  echo "* Change config for the default site and test ..."
+  sed -i "44s/index /index index.php /" /etc/nginx/sites-available/default
+  sed -i "56,60s/#//" /etc/nginx/sites-available/default
+  sed -i "63s/#//" /etc/nginx/sites-available/default
+  nginx -t
 
-  echo "* Start and enable the service ..."
-  systemctl enable --now apache2
-  systemctl status apache2
+  echo "* Change the main index web page ..."
+  echo "<h1>Hello from $(hostname)</h1>" | tee /var/www/html/index.html
 
-  echo "* Create custom index file ..."
-  echo "Custom index.html Web Page" | tee /var/www/html/index.html
+  echo "* Restart and enable the service ..."
+  systemctl enable nginx
+  systemctl restart nginx
+
+#  echo "* Adjust the firewall settings ..."
+#  ufw allow "Nginx Full"
 
   echo "* Test ..."
-  curl localhost
+  curl http://localhost
 
 else
 

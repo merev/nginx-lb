@@ -6,13 +6,7 @@ echo "* Export Distro version in env var and print its value ..."
 VAR=`cat /proc/version | grep -o 'Red Hat\|Debian' | head -n 1`
 echo "$VAR"
 
-##################################################
-################ RHEL commands ###################
-##################################################
-
 if [[ $VAR == "Red Hat" ]]; then
-
-################## NGINX Settings ##################
 
   echo "* Change SSL config file and test ..."
   sed -i "60,87s/#//" /etc/nginx/nginx.conf
@@ -32,57 +26,32 @@ if [[ $VAR == "Red Hat" ]]; then
   firewall-cmd --add-service https --permanent
   firewall-cmd --reload
 
-#######################################################
-
 else
 
   echo "This is not RHEL-based distro. Skipping RHEL block."
 
 fi
 
-##################################################
-##################################################
-##################################################
-
-
-##################################################
-############### Debian commands ##################
-##################################################
-
 if [[ $VAR == 'Debian' ]]; then
 
-################## NGINX Settings ##################
+  echo "* Change SSL config file and test ..."
+  sed -i '24i\        return       301 https://$host$request_uri;\' /etc/nginx/sites-available/default
+  sed -i "28,29s/# //" /etc/nginx/sites-available/default
+  sed -i '30i\        ssl_certificate /etc/nginx/ca.crt;\' /etc/nginx/sites-available/default
+  sed -i '31i\        ssl_certificate_key /etc/nginx/ca.key;\' /etc/nginx/sites-available/default
+  nginx -t
 
-#  echo "* Change SSL config file and test..."
-#  sed -i "85s/localhost/ca/" /etc/httpd/conf.d/ssl.conf
-#  sed -i "93s/localhost/ca/" /etc/httpd/conf.d/ssl.conf
-#  apachectl configtest
-
-  echo "* Enable SSL modules ..."
-  a2enmod ssl
-  a2enmod rewrite
-  
-  echo "* Activate SSL ..."
-  cp /vagrant/vagrant/ssl-config/deb-ssl-activate.conf /etc/apache2/sites-available/000-default-ssl.conf
-  
-  echo "* Configure automatic redirect ..."
-  cp /vagrant/vagrant/ssl-config/deb-ssl-redirect.conf /etc/apache2/sites-available/000-default.conf
-  
-  echo "* Enable the SSL version of the site ..."
-  a2ensite 000-default-ssl.conf
-  apachectl configtest
-  
   echo "* Restart the service ..."
-  systemctl restart apache2 && systemctl status apache2
+  systemctl restart nginx && systemctl status nginx
 
-#######################################################
+  echo "* Test ..."
+  curl -k https://localhost
+
+#  echo "* Adjust the firewall settings ..."
+#  ufw allow "Nginx HTTPS"
 
 else
 
   echo "This is not Debian-based distro. Skipping Debian block."
 
 fi
-
-##################################################
-##################################################
-##################################################

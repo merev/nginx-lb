@@ -53,18 +53,4 @@ Vagrant.configure("2") do |config|
     vm3.vm.provision "shell", path: "initial-config/load-balancer-setup.sh"
   end
 
-  # CentOS Stream 8
-  config.vm.define "vm4" do |vm4|
-    vm4.vm.box = "merev/centos-stream"
-    vm4.vm.box_version = "8"
-    vm4.vm.hostname = "nginx-single"
-    vm4.vm.network "private_network", ip: "192.168.100.164"
-#    vm3.vm.synced_folder "shared/", "/shared"
-    vm4.vm.provision "shell", path: "initial-config/add_hosts.sh"
-    vm4.vm.provision "shell", path: "initial-config/nginx-setup.sh"
-    vm4.vm.provision "shell", path: "initial-config/virtual-hosts-setup.sh"
-    vm4.vm.provision "shell", path: "initial-config/ssl-preparation.sh"
-    vm4.vm.provision "shell", path: "initial-config/ssl-target.sh"
-  end
-
 end
