@@ -42,7 +42,7 @@ fi
 
 if [[ $VAR == 'Debian' ]]; then
 
-
+  echo "This is not Debian-based distro. Skipping Debian block."
 
 else
 

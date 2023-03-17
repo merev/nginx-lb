@@ -15,7 +15,7 @@ if [[ $VAR == "Red Hat" ]]; then
   nginx -t
 
   echo "* Restart the service ..."
-  systemctl restart httpd && systemctl status httpd
+  systemctl restart nginx && systemctl status nginx
   
   echo "* Adjust SELinux boolean ..."
   setsebool -P httpd_can_network_connect on

@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 echo "* Exporting Distro version in env var and print its value ..."
@@ -40,15 +39,12 @@ if [[ $VAR == "Red Hat" ]]; then
   curl www.$(hostname).lab
 
 else
-
+ 
   echo "This is not RHEL-based distro. Skipping RHEL block."
-
+ 
 fi
-
 ##################################################
-
 ############### Debian commands ##################
-
 if [[ $VAR == 'Debian' ]]; then
 
   echo "* Prepare the config files ..."
