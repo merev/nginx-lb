@@ -16,7 +16,7 @@ if [[ $VAR == "Red Hat" ]]; then
   echo "* Create needed folders ..."
   mkdir /usr/share/nginx/vhost-{name,port}
   
-  echo "* Create two new indexes files ..."
+  echo "* Create two new index files ..."
   echo "<h1>Cutom index.html page for vhost by port from $(hostname)</h1>" | tee /usr/share/nginx/vhost-port/index.html
   echo "<h1>Cutom index.html page for vhost by name from $(hostname)</h1>" | tee /usr/share/nginx/vhost-name/index.html
   
