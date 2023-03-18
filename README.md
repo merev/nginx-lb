@@ -1,4 +1,4 @@
-# Apache Reverse Proxy
+# NGINX Load Balancer
 
 This is an automated solution for NGINX Load Balancer created through Vagrant. Follow the steps below:
  - clone the repository; 
